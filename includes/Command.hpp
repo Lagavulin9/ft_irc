@@ -1,27 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   Command.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ijinhong <ijinhong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/04/14 21:19:54 by ijinhong          #+#    #+#             */
-/*   Updated: 2023/05/10 18:49:01 by ijinhong         ###   ########.fr       */
+/*   Created: 2023/05/09 16:33:27 by ijinhong          #+#    #+#             */
+/*   Updated: 2023/05/10 18:56:18 by ijinhong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/IRC.hpp"
-#include "../includes/Server.hpp"
+#pragma once
+#ifndef __COMMAND_HPP__
+# define __COMMAND_HPP__
 
-int	main(int argc, char **argv)
-{
-	if (argc != 3)
-	{
-		std::cout << "Usage " << argv[0] << " <port> <password>" << std::endl;
-		exit(1);
-	}
+class Server;
+class Client;
 
-	Server	serv(myAtoi(argv[1]), argv[2]);
-	serv.launchServer();
-	return (0);
-}
+#endif

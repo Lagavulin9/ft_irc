@@ -6,7 +6,7 @@
 /*   By: ijinhong <ijinhong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/14 21:25:46 by ijinhong          #+#    #+#             */
-/*   Updated: 2023/05/04 21:48:26 by ijinhong         ###   ########.fr       */
+/*   Updated: 2023/05/11 15:07:57 by ijinhong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,35 +14,68 @@
 #ifndef __SERVER_CPP__
 # define __SERVER_CPP__
 
+# include "defines.hpp"
 # include <unistd.h>
 # include <stdlib.h>
-# include <string.h>
+# include <unistd.h>
+# include <stdio.h>
+# include <stdlib.h>
 # include <sys/socket.h>
+# include <sys/select.h>
+# include <sys/poll.h>
 # include <arpa/inet.h>
 # include <iostream>
+# include <string>
+# include <sstream>
+# include <vector>
+# include <map>
 
-# define BUFFER_SIZE 1024
-# define MAX_CLIENT 10
+class Client;
+class Channel;
+
+enum e_commands {
+	JOIN, KICK, NICK, PART, PING, PRIVMSG, QUIT, USER, PASS
+};
 
 class Server {
 private:
-	struct sockaddr_in	serv_adr, clnt_adr;
-	char				buffer[BUFFER_SIZE];
-	int					clnt_sock, clnt_adr_size;
-	int					serv_sock, port;
+	struct sockaddr_in				_serv_adr;
+	char							_buffer[BUFFER_SIZE];
+	int								_serv_sock, _port;
+	struct pollfd					_poll_fds[MAX_CLIENT];
+	std::string						_pass;
+	std::map<int, Client*>			_clients;
+	std::map<std::string, Channel*>	_channels;
 
 	Server();
 	Server(const Server&);
+	Server&	operator=(const Server&);
+	void	listen(void);
+	void	bind(void);
+	void	accept(void);
+	void	initPoll(void);
+	void	broadcast(int from, const std::string& msg);
+	void	clientRead(void);
+	void	clientWrite(int to, std::string msg);
+	void	registerClient(int client_socket);
+	void	removeClient(Client *client);
+	void	setCommandInfo(std::string& line, std::vector<std::string>& cmd_info);
+	void	join(Client& client, std::vector<std::string> cmd_info);
+	void	kick(Client& client, std::vector<std::string> cmd_info);
+	void	part(Client& client, std::vector<std::string> cmd_info);
+	void	privmsg(Client& client, std::vector<std::string> cmd_info);
+	void	pass(Client& client, std::vector<std::string> cmd_info);
+	void	user(Client& client, std::vector<std::string> cmd_info);
+	void	nick(Client& client, std::vector<std::string> cmd_info);
+	void	pong(Client& client);
+	void	quit(Client& client);
+	void	handleRequest(Client *client, std::string req);
 public:
-	Server(int port);
+	Server(int port, std::string pass);
 	~Server();
 
-	Server&	operator=(const Server&);
-
-	void	listen(int backlog);
-	void	accept(void);
-	// void	client_read(int clnt_scok);
-	void	broadcast(void);
+	void		launchServer(void);
+	//Channel&	createChannel(const std::string& name);
 };
 
 #endif
