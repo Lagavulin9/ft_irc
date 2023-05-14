@@ -6,7 +6,7 @@
 /*   By: ijinhong <ijinhong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 22:07:39 by ijinhong          #+#    #+#             */
-/*   Updated: 2023/05/10 18:52:06 by ijinhong         ###   ########.fr       */
+/*   Updated: 2023/05/14 18:15:47 by ijinhong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,5 +40,6 @@ void	RPL_YOURHOST(Client& client);
 void	RPL_CREATED(Client& client);
 void	RPL_MYINFO(Client& client);
 void	RPL_PONG(Client& client);
+void	ERR_NICKNAMEINUSE(Client& client);
 
 #endif

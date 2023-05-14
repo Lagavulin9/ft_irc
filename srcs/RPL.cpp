@@ -6,7 +6,7 @@
 /*   By: ijinhong <ijinhong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/09 16:34:15 by ijinhong          #+#    #+#             */
-/*   Updated: 2023/05/10 20:35:54 by ijinhong         ###   ########.fr       */
+/*   Updated: 2023/05/14 18:15:28 by ijinhong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,5 +49,13 @@ void	RPL_PONG(Client& client)
 	std::string	reply;
 
 	reply = "PONG " + client.getUserName() + "\n";
+	send(client.getFD(), reply.c_str(), reply.length(), 0);
+}
+
+void	ERR_NICKNAMEINUSE(Client& client)
+{
+	std::string	reply;
+
+	reply = "433\n Nick already in use\n";
 	send(client.getFD(), reply.c_str(), reply.length(), 0);
 }

@@ -6,7 +6,7 @@
 /*   By: ijinhong <ijinhong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/09 16:46:18 by ijinhong          #+#    #+#             */
-/*   Updated: 2023/05/10 20:26:55 by ijinhong         ###   ########.fr       */
+/*   Updated: 2023/05/14 19:51:24 by ijinhong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,10 @@ void	Client::setRoll(std::string roll)
 
 void	Client::addChannel(Channel& channel)
 {
-	_channels.push_back(&channel);
+	std::vector<Channel*>::iterator	it;
+	it = std::find(_channels.begin(), _channels.end(), &channel);
+	if (it == _channels.end())
+		_channels.push_back(&channel);
 }
 
 bool	Client::isAuthenticated()
@@ -98,4 +101,15 @@ const std::string&	Client::getRoll()
 const std::vector<Channel*>	Client::getChannels()
 {
 	return (this->_channels);
+}
+
+void	Client::removeChannel(Channel& channel)
+{
+	std::vector<Channel*>::iterator	it = _channels.begin();
+	while (it != _channels.end())
+	{
+		Channel	*to_remove = *it;
+		if (to_remove == &channel)
+			_channels.erase(it);
+	}
 }

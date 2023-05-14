@@ -6,7 +6,7 @@
 /*   By: ijinhong <ijinhong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/14 21:45:51 by ijinhong          #+#    #+#             */
-/*   Updated: 2023/05/12 17:26:22 by ijinhong         ###   ########.fr       */
+/*   Updated: 2023/05/14 19:52:37 by ijinhong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,11 +143,6 @@ void	Server::clientRead(void)
 			else
 			{
 				this->handleRequest(client, buffer);
-				std::cout << "Auth: " << client->isAuthenticated() << std::endl;
-				std::cout << "nick: " << client->getNickName() << std::endl;
-				std::cout << "username: " << client->getUserName() << std::endl;
-				std::cout << "realname: " << client->getRealName() << std::endl;
-				std::cout << "hostname: " << client->getHostName() << std::endl;
 			}
 		}
 	}
@@ -209,11 +204,11 @@ void	Server::handleRequest(Client *client, std::string req)
 		}
 		switch (i)
 		{
-			case JOIN: printf("JOIN\n"); break;
-			case KICK: printf("KICK\n"); break;
+			case JOIN: this->join(*client, cmd_info); break;
+			case KICK: this->kick(*client, cmd_info); break;
 			case NICK: this->nick(*client, cmd_info); break;
 			case PART: printf("PART\n"); break;
-			case PING: printf("PING\n"); break;
+			case PING: this->pong(*client); break;
 			case PRIVMSG: printf("PRIVMSG\n"); break;
 			case QUIT: printf("QUIT\n"); break;
 			case USER: this->user(*client, cmd_info); break;
@@ -223,47 +218,78 @@ void	Server::handleRequest(Client *client, std::string req)
 	}
 }
 
-// void	Server::join(Client& client, std::vector<std::string> cmd_info)
-// {
-// 	std::string	channel_name;
+void	Server::join(Client& client, std::vector<std::string> cmd_info)
+{
+	std::string	channel_name;
 
-// 	if (cmd_info.size() < 2)
-// 		return ;
-// 	channel_name = cmd_info[1];
-// 	std::map<std::string, Channel*>::iterator it = _channels.find(channel_name);
-// 	if (it == _channels.end())
-// 	{
-// 		Channel *newChannel = new Channel(channel_name);
-// 		newChannel.addOperator(client);
-// 		_channels.insert(std::pair<std::string, Channel*>(channel_name, newChannel));
-// 		client.addChannel(*newChannel);
-// 	}
-// 	else
-// 	{
-// 		Channel *channel = it->second;
-// 		*channel.addClient(client);
-// 		client.addChannel(*channel);
-// 	}
-// }
+	if (cmd_info.size() < 2)
+		return ;
+	channel_name = cmd_info[1];
+	std::map<std::string, Channel*>::iterator it = _channels.find(channel_name);
+	if (it == _channels.end())
+	{
+		Channel *newChannel = new Channel(channel_name);
+		newChannel->addOperator(client);
+		_channels.insert(std::pair<std::string, Channel*>(channel_name, newChannel));
+		client.addChannel(*newChannel);
+	}
+	else
+	{
+		Channel *channel = it->second;
+		channel->addClient(client);
+		client.addChannel(*channel);
+	}
+	std::cout << "Channels: ";
+	for (it=_channels.begin(); it!=_channels.end(); it++)
+	{
+		std::cout << it->second->getName() << ", ";
+	}
+	std::cout << std::endl;
+}
 
 void	Server::kick(Client& client, std::vector<std::string> cmd_info)
 {
-	
+	std::string	channel_name = cmd_info[1];
+	std::string	nick = cmd_info[2];
+	std::string	reason = cmd_info[3];
+	std::map<std::string,Channel*>::iterator it = _channels.find(channel_name);
+	if (it == _channels.end())
+		return ;
+	Channel	*channel = it->second;
+	std::vector<Client*> client_list = channel->getClients();
+	std::vector<Client*>::iterator	iter = client_list.begin();
+	while (iter != client_list.end())
+	{
+		Client *to_kick = *iter;
+		if (to_kick->getNickName() == nick)
+		{
+			channel->removeClient(*to_kick);
+			to_kick->removeChannel(*channel);
+			return ;
+		}
+		it++;
+	}
 }
 
-void	Server::part(Client& client, std::vector<std::string> cmd_info)
-{
+// void	Server::part(Client& client, std::vector<std::string> cmd_info)
+// {
 	
-}
+// }
 
-void	Server::privmsg(Client& client, std::vector<std::string> cmd_info)
-{
+// void	Server::privmsg(Client& client, std::vector<std::string> cmd_info)
+// {
+
+// }
+
+// void	Server::quit(Client& client)
+// {
 	
-}
+// }
 
 void	Server::pong(Client& client)
 {
 	RPL_PONG(client);
+	std::cout << "Server Pong" << std::endl;
 }
 
 void	Server::user(Client& client, std::vector<std::string> cmd_info)
@@ -279,7 +305,18 @@ void	Server::nick(Client& client, std::vector<std::string> cmd_info)
 {
 	if (cmd_info.size() != 2)
 		return ;
-	client.setNickName(cmd_info[1]);
+	std::string nick = cmd_info[1];
+	std::map<int,Client*>::iterator	it = _clients.begin();
+	while (it != _clients.end())
+	{
+		if (it->second->getNickName() == nick)
+		{
+			ERR_NICKNAMEINUSE(client);
+			return ;
+		}
+		it++;
+	}
+	client.setNickName(nick);
 }
 
 void	Server::pass(Client& client, std::vector<std::string> cmd_info)
