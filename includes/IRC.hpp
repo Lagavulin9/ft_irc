@@ -6,7 +6,7 @@
 /*   By: ijinhong <ijinhong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 22:07:39 by ijinhong          #+#    #+#             */
-/*   Updated: 2023/05/14 18:15:47 by ijinhong         ###   ########.fr       */
+/*   Updated: 2023/05/14 21:54:43 by ijinhong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,11 +35,16 @@
 # include <map>
 
 int		myAtoi(const std::string& str);
+void	sendToClient(Client& client, std::string reply);
 void	RPL_WELCOME(Client& client);
 void	RPL_YOURHOST(Client& client);
 void	RPL_CREATED(Client& client);
 void	RPL_MYINFO(Client& client);
 void	RPL_PONG(Client& client);
+void	ERR_NOSUCHNICK(Client& client);
+void	ERR_NOSUCHCHANNEL(Client& client);
 void	ERR_NICKNAMEINUSE(Client& client);
+void	ERR_USERNOTINCHANNEL(Client& client);
+void	ERR_CHANOPRIVSNEEDED(Client& client);
 
 #endif

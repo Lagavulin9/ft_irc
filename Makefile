@@ -14,7 +14,7 @@ SRCS = $(addprefix $(SRC_DIR), $(SRC))
 OBJS = $(SRCS:.cpp=.o)
 
 ifdef SANITIZE
-	$(CXXFLAGS) = -Wall -Werror -Wextra -std=c++98 -fsanitize=address -g3
+	CXXFLAGS = -Wall -Werror -Wextra -std=c++98 -fsanitize=address -g3
 endif
 
 all : $(NAME)

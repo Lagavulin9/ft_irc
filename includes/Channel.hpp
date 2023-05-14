@@ -6,7 +6,7 @@
 /*   By: ijinhong <ijinhong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 23:32:33 by ijinhong          #+#    #+#             */
-/*   Updated: 2023/05/14 19:47:48 by ijinhong         ###   ########.fr       */
+/*   Updated: 2023/05/14 21:51:35 by ijinhong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,11 +46,13 @@ public:
 	~Channel();
 
 	const std::string&			getName(void);
+	const Client*				getOperator(void);
 	const std::vector<Client*>&	getClients(void);
 	bool						isEmpty(void);
 	void						addOperator(Client& client);
 	void						addClient(Client& client);
 	void						removeClient(Client& client);
+	void						broadcast(Client&, std::string);
 };
 
 #endif

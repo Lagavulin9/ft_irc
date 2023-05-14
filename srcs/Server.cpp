@@ -6,7 +6,7 @@
 /*   By: ijinhong <ijinhong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/14 21:45:51 by ijinhong          #+#    #+#             */
-/*   Updated: 2023/05/14 19:52:37 by ijinhong         ###   ########.fr       */
+/*   Updated: 2023/05/14 22:55:33 by ijinhong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -209,7 +209,7 @@ void	Server::handleRequest(Client *client, std::string req)
 			case NICK: this->nick(*client, cmd_info); break;
 			case PART: printf("PART\n"); break;
 			case PING: this->pong(*client); break;
-			case PRIVMSG: printf("PRIVMSG\n"); break;
+			case PRIVMSG: this->privmsg(*client, cmd_info); break;
 			case QUIT: printf("QUIT\n"); break;
 			case USER: this->user(*client, cmd_info); break;
 			case PASS: this->pass(*client, cmd_info); break;
@@ -251,11 +251,18 @@ void	Server::kick(Client& client, std::vector<std::string> cmd_info)
 {
 	std::string	channel_name = cmd_info[1];
 	std::string	nick = cmd_info[2];
-	std::string	reason = cmd_info[3];
 	std::map<std::string,Channel*>::iterator it = _channels.find(channel_name);
 	if (it == _channels.end())
+	{
+		ERR_NOSUCHCHANNEL(client);
 		return ;
+	}
 	Channel	*channel = it->second;
+	if (channel->getOperator() != &client)
+	{
+		ERR_CHANOPRIVSNEEDED(client);
+		return ;
+	}
 	std::vector<Client*> client_list = channel->getClients();
 	std::vector<Client*>::iterator	iter = client_list.begin();
 	while (iter != client_list.end())
@@ -263,12 +270,16 @@ void	Server::kick(Client& client, std::vector<std::string> cmd_info)
 		Client *to_kick = *iter;
 		if (to_kick->getNickName() == nick)
 		{
+			if (to_kick == &client)
+				return ;
 			channel->removeClient(*to_kick);
 			to_kick->removeChannel(*channel);
+			std::cout << to_kick->getNickName() << " has been removed from channel: " << channel->getName() << std::endl;
 			return ;
 		}
-		it++;
+		iter++;
 	}
+	ERR_USERNOTINCHANNEL(client);
 }
 
 // void	Server::part(Client& client, std::vector<std::string> cmd_info)
@@ -276,10 +287,25 @@ void	Server::kick(Client& client, std::vector<std::string> cmd_info)
 	
 // }
 
-// void	Server::privmsg(Client& client, std::vector<std::string> cmd_info)
-// {
-
-// }
+void	Server::privmsg(Client& client, std::vector<std::string> cmd_info)
+{
+	std::string	channel_name = cmd_info[1];
+	std::map<std::string,Channel*>::iterator it = _channels.find(channel_name);
+	if (it == _channels.end())
+	{
+		ERR_NOSUCHCHANNEL(client);
+		return ;
+	}
+	Channel	*channel = it->second;
+	std::string	msg;
+	for (size_t i=2; i<cmd_info.size(); i++)
+	{
+		msg.append(cmd_info[i]);
+		if (i != cmd_info.size() - 1)
+			msg.append(" ");
+	}
+	channel->broadcast(client, msg);
+}
 
 // void	Server::quit(Client& client)
 // {
@@ -312,11 +338,13 @@ void	Server::nick(Client& client, std::vector<std::string> cmd_info)
 		if (it->second->getNickName() == nick)
 		{
 			ERR_NICKNAMEINUSE(client);
-			return ;
+			nick.append("_JJap");
+			break;
 		}
 		it++;
 	}
 	client.setNickName(nick);
+	sendToClient(client, ":"+cmd_info[1]+"!"+client.getUserName()+"@localhost NICK "+nick+"\n");
 }
 
 void	Server::pass(Client& client, std::vector<std::string> cmd_info)
@@ -331,7 +359,7 @@ void	Server::pass(Client& client, std::vector<std::string> cmd_info)
 	RPL_MYINFO(client);
 }
 
-void	Server::setCommandInfo(std::string& line, std::vector<std::string>& cmd_info)
+void	Server::setCommandInfo(std::string line, std::vector<std::string>& cmd_info)
 {
 	std::istringstream	iss(line);
 	std::string	args;
