@@ -6,7 +6,7 @@
 /*   By: ijinhong <ijinhong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/14 21:45:51 by ijinhong          #+#    #+#             */
-/*   Updated: 2023/05/15 19:47:28 by ijinhong         ###   ########.fr       */
+/*   Updated: 2023/05/15 20:09:31 by ijinhong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -297,23 +297,16 @@ void	Server::kick(Client& client, std::vector<std::string> cmd_info)
 
 void	Server::privmsg(Client& client, std::vector<std::string> cmd_info)
 {
-	std::string	channel_name = cmd_info[1];
-	std::map<std::string,Channel*>::iterator it = _channels.find(channel_name);
-	if (it == _channels.end())
-	{
-		ERR_NOSUCHCHANNEL(client);
+	if (cmd_info.size() < 3)
 		return ;
-	}
-	Channel	*channel = it->second;
-	std::string	msg;
-	for (size_t i=2; i<cmd_info.size(); i++)
+	std::string	target = cmd_info[1];
+	std::string msg = cmd_info[2];
+	std::map<std::string,Channel*>::iterator it = _channels.find(target);
+	if (it != _channels.end())
 	{
-		msg.append(cmd_info[i]);
-		if (i != cmd_info.size() - 1)
-			msg.append(" ");
+		Channel	*channel = it->second;
+		channel->broadcast(client, msg);
 	}
-	msg += "\n";
-	channel->broadcast(client, msg);
 }
 
 void	Server::mode(Client& client, std::vector<std::string> cmd_info)
@@ -395,7 +388,21 @@ void	Server::setCommandInfo(std::string line, std::vector<std::string>& cmd_info
 	std::istringstream	iss(line);
 	std::string	args;
 	while (iss >> args)
+	{
+		if (args == "PRIVMSG")
+		{
+			cmd_info.push_back(args);
+			if (iss >> args)
+				cmd_info.push_back(args);
+			size_t	pos = iss.str().find(":");
+			// if (pos == std::string::npos)
+			// 	send_some_error
+			cmd_info.push_back(iss.str().substr(pos + 1));
+			return ;
+		}
 		cmd_info.push_back(args);
+	}
+	
 }
 
 void	Server::launchServer(void)

@@ -6,7 +6,7 @@
 /*   By: ijinhong <ijinhong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/14 16:56:16 by ijinhong          #+#    #+#             */
-/*   Updated: 2023/05/15 19:46:27 by ijinhong         ###   ########.fr       */
+/*   Updated: 2023/05/15 20:11:30 by ijinhong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ void	Channel::broadcast(Client& from, std::string msg)
 	{
 		Client	*to_send = *it;
 		if (to_send != &from)
-			sendToClient(*to_send, msg);
+			sendToClient(*to_send, ":"+from.getNickName()+"!"+from.getUserName()+"@localhost PRIVMSG "+_name+" :"+msg+"\n");
 		it++;
 	}
 }
