@@ -6,7 +6,7 @@
 /*   By: ijinhong <ijinhong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 23:23:19 by ijinhong          #+#    #+#             */
-/*   Updated: 2023/05/14 19:48:31 by ijinhong         ###   ########.fr       */
+/*   Updated: 2023/05/15 18:25:49 by ijinhong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,13 +33,17 @@ class Server;
 class Client {
 private:
 	bool					_authenticated;
+	bool					_welcomed;
+	bool					_nickInUse;
 	int						_socketfd;
 	std::string				_username;
 	std::string				_realname;
 	std::string				_hostname;
 	std::string				_nick;
+	std::string				_oldnick;
 	std::string				_roll;
 	std::vector<Channel*>	_channels;
+	std::string				_buffer;
 	Client();
 	Client(const Client&);
 	Client&	operator=(const Client&);
@@ -49,18 +53,28 @@ public:
 	~Client();
 
 	void				setAuth(bool);
+	void				setWelcome(bool);
+	void				setNickInUse(bool);
 	void				setUserName(std::string);
 	void				setRealName(std::string);
 	void				setHostName(std::string);
 	void				setNickName(std::string);
 	void				setRoll(std::string);
+	void				setBuffer(std::string);
 	void				addChannel(Channel& channel);
-	bool				isAuthenticated();
+	void				addBuffer(std::string);
+	bool				isAuthenticated(void);
+	bool				isWelcomed(void);
+	bool				isNickUsed(void);
+	bool				isNickSet(void);
+	bool				isUserSet(void);
 	int					getFD(void);
+	std::string&		getBuffer(void);
 	const std::string&	getUserName(void);
 	const std::string&	getRealName(void);
 	const std::string&	getHostName(void);
 	const std::string&	getNickName(void);
+	const std::string&	getOldNick(void);
 	const std::string&	getRoll(void);
 	const std::vector<Channel*> getChannels(void);
 	void				removeChannel(Channel&);

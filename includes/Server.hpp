@@ -6,7 +6,7 @@
 /*   By: ijinhong <ijinhong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/14 21:25:46 by ijinhong          #+#    #+#             */
-/*   Updated: 2023/05/14 22:42:31 by ijinhong         ###   ########.fr       */
+/*   Updated: 2023/05/15 18:47:17 by ijinhong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,6 @@
 
 class Client;
 class Channel;
-
-enum e_commands {
-	JOIN, KICK, NICK, PART, PING, PRIVMSG, QUIT, USER, PASS
-};
 
 class Server {
 private:
@@ -68,7 +64,7 @@ private:
 	void	user(Client& client, std::vector<std::string> cmd_info);
 	void	nick(Client& client, std::vector<std::string> cmd_info);
 	void	pong(Client& client);
-	void	quit(Client& client);
+	void	mode(Client& client, std::vector<std::string> cmd_info);
 	void	handleRequest(Client *client, std::string req);
 public:
 	Server(int port, std::string pass);

@@ -6,7 +6,7 @@
 /*   By: ijinhong <ijinhong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/14 21:45:51 by ijinhong          #+#    #+#             */
-/*   Updated: 2023/05/14 22:55:33 by ijinhong         ###   ########.fr       */
+/*   Updated: 2023/05/15 19:47:28 by ijinhong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,8 +116,8 @@ void	Server::broadcast(int from, const std::string& msg)
 
 void	Server::clientRead(void)
 {
-	int							r;
-	char						buffer[BUFFER_SIZE];
+	int		r;
+	char	buffer[BUFFER_SIZE];
 
 	memset(buffer, 0, BUFFER_SIZE);
 	for (int i = SERVER_POLLFD_IDX + 1; i < MAX_CLIENT; i++)
@@ -143,6 +143,22 @@ void	Server::clientRead(void)
 			else
 			{
 				this->handleRequest(client, buffer);
+				if (!client->isWelcomed())
+				{
+					if (client->isUserSet())
+					{
+						if (client->isNickUsed())
+							ERR_NICKNAMEINUSE(*client);
+						else if (client->isNickSet())
+						{
+							RPL_WELCOME(*client);
+							RPL_YOURHOST(*client);
+							RPL_CREATED(*client);
+							RPL_MYINFO(*client);
+							client->setWelcome(true);
+						}
+					}
+				}
 			}
 		}
 	}
@@ -174,24 +190,20 @@ void	Server::removeClient(Client	*client)
 
 void	Server::handleRequest(Client *client, std::string req)
 {
-	std::istringstream			iss(req);
-	std::string					line, cmd;
-	std::string					_validCmds[] = {
-		"JOIN",
-		"KICK", 
-		"NICK",
-		"PART",
-		"PING",
-		"PRIVMSG",
-		"QUIT",
-		"USER",
-		"PASS",
-		"NAME"
-	};
+	size_t		pos, i;
+	std::string	line, cmd;
+	std::string	_validCmds[] = { "JOIN","KICK","NICK","PART","PING","PRIVMSG","MODE","USER","PASS","NAME" };
 
-	while (std::getline(iss, line, '\n'))
+	client->addBuffer(req);
+	while (1)
 	{
-		int	i;
+		pos = client->getBuffer().find('\n');
+		if (pos == std::string::npos)
+			break ;
+		line = client->getBuffer().substr(0, pos);
+		std::cout << "[Client #" << client->getFD() << "] to [Server] << " << line << std::endl;
+		client->setBuffer(client->getBuffer().substr(pos+1));
+
 		std::vector<std::string>	cmd_info;
 		setCommandInfo(line, cmd_info);
 		if (cmd_info.empty())
@@ -210,10 +222,10 @@ void	Server::handleRequest(Client *client, std::string req)
 			case PART: printf("PART\n"); break;
 			case PING: this->pong(*client); break;
 			case PRIVMSG: this->privmsg(*client, cmd_info); break;
-			case QUIT: printf("QUIT\n"); break;
+			case MODE: this->mode(*client, cmd_info); break;
 			case USER: this->user(*client, cmd_info); break;
 			case PASS: this->pass(*client, cmd_info); break;
-			default: printf("Unknown Command\n"); break;
+			default: ERR_UNKNOWNCOMMAND(*client, cmd_info[0]); break;
 		}
 	}
 }
@@ -221,6 +233,7 @@ void	Server::handleRequest(Client *client, std::string req)
 void	Server::join(Client& client, std::vector<std::string> cmd_info)
 {
 	std::string	channel_name;
+	Channel *channel;
 
 	if (cmd_info.size() < 2)
 		return ;
@@ -228,23 +241,18 @@ void	Server::join(Client& client, std::vector<std::string> cmd_info)
 	std::map<std::string, Channel*>::iterator it = _channels.find(channel_name);
 	if (it == _channels.end())
 	{
-		Channel *newChannel = new Channel(channel_name);
-		newChannel->addOperator(client);
-		_channels.insert(std::pair<std::string, Channel*>(channel_name, newChannel));
-		client.addChannel(*newChannel);
+		channel = new Channel(channel_name);
+		channel->addOperator(client);
+		_channels.insert(std::pair<std::string, Channel*>(channel_name, channel));
+		client.addChannel(*channel);
 	}
 	else
 	{
-		Channel *channel = it->second;
+		channel = it->second;
 		channel->addClient(client);
 		client.addChannel(*channel);
 	}
-	std::cout << "Channels: ";
-	for (it=_channels.begin(); it!=_channels.end(); it++)
-	{
-		std::cout << it->second->getName() << ", ";
-	}
-	std::cout << std::endl;
+	channel->announce(client);
 }
 
 void	Server::kick(Client& client, std::vector<std::string> cmd_info)
@@ -304,18 +312,39 @@ void	Server::privmsg(Client& client, std::vector<std::string> cmd_info)
 		if (i != cmd_info.size() - 1)
 			msg.append(" ");
 	}
+	msg += "\n";
 	channel->broadcast(client, msg);
 }
 
-// void	Server::quit(Client& client)
-// {
-	
-// }
+void	Server::mode(Client& client, std::vector<std::string> cmd_info)
+{
+	if (cmd_info.size() < 2)
+		return ;
+	std::string	target = cmd_info[1];
+	if (target[0] == '#')
+	{
+		std::map<std::string,Channel*>::iterator it = _channels.find(target);
+		if (it == _channels.end())
+			ERR_NOSUCHCHANNEL(client);
+		else
+		{
+			Channel	*channel = it->second;
+			RPL_CHANNELMODEIS(client, *channel);
+		}
+	}
+	else
+	{
+		if (cmd_info.size() != 3)
+			return ;
+		if (cmd_info[2] != "+i" && cmd_info[2] != "+o")
+			return ;
+		RPL_USERMODE(client, cmd_info[2]);
+	}
+}
 
 void	Server::pong(Client& client)
 {
 	RPL_PONG(client);
-	std::cout << "Server Pong" << std::endl;
 }
 
 void	Server::user(Client& client, std::vector<std::string> cmd_info)
@@ -337,14 +366,20 @@ void	Server::nick(Client& client, std::vector<std::string> cmd_info)
 	{
 		if (it->second->getNickName() == nick)
 		{
-			ERR_NICKNAMEINUSE(client);
-			nick.append("_JJap");
-			break;
+			if (client.isUserSet())
+				ERR_NICKNAMEINUSE(client);
+			else
+			{
+				client.setNickName(nick);
+				client.setNickInUse(true);
+			}
+			return ;
 		}
 		it++;
 	}
 	client.setNickName(nick);
-	sendToClient(client, ":"+cmd_info[1]+"!"+client.getUserName()+"@localhost NICK "+nick+"\n");
+	client.setNickInUse(false);
+	RPL_NICK(client);
 }
 
 void	Server::pass(Client& client, std::vector<std::string> cmd_info)
@@ -353,23 +388,14 @@ void	Server::pass(Client& client, std::vector<std::string> cmd_info)
 		return ;
 	client.setAuth(true);
 	std::cout << "Client #" << client.getFD() << " connected to server" << std::endl;
-	RPL_WELCOME(client);
-	RPL_YOURHOST(client);
-	RPL_CREATED(client);
-	RPL_MYINFO(client);
 }
 
 void	Server::setCommandInfo(std::string line, std::vector<std::string>& cmd_info)
 {
 	std::istringstream	iss(line);
 	std::string	args;
-	std::cout << "line: ";
 	while (iss >> args)
-	{
 		cmd_info.push_back(args);
-		std::cout << args << " ";
-	}
-	std::cout << std::endl;
 }
 
 void	Server::launchServer(void)

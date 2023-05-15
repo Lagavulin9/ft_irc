@@ -6,7 +6,7 @@
 /*   By: ijinhong <ijinhong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/14 16:56:16 by ijinhong          #+#    #+#             */
-/*   Updated: 2023/05/14 22:48:24 by ijinhong         ###   ########.fr       */
+/*   Updated: 2023/05/15 19:46:27 by ijinhong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,20 @@ const Client*	Channel::getOperator(void)
 const std::vector<Client*>&	Channel::getClients(void)
 {
 	return (_clients);
+}
+
+std::string	Channel::getClientNameList(void)
+{
+	std::string	list;
+	std::vector<Client*>::iterator	it = _clients.begin();
+	while (it != _clients.end())
+	{
+		if ((*it) == _operator)
+			list += "@";
+		list += (*it)->getNickName() + " ";
+		it++;
+	}
+	return (list);
 }
 
 bool	Channel::isEmpty(void)
@@ -74,6 +88,29 @@ void	Channel::broadcast(Client& from, std::string msg)
 		Client	*to_send = *it;
 		if (to_send != &from)
 			sendToClient(*to_send, msg);
+		it++;
+	}
+}
+
+void	Channel::broadcastAll(std::string msg)
+{
+	std::vector<Client*>::iterator	it = _clients.begin();
+	while (it != _clients.end())
+	{
+		Client	*to_send = *it;
+		sendToClient(*to_send, msg);
+		it++;
+	}
+}
+
+void	Channel::announce(Client& from)
+{
+	std::vector<Client*>::iterator	it = _clients.begin();
+	while (it != _clients.end())
+	{
+		RPL_JOIN(*(*it), from.getNickName(), _name);
+		RPL_NAMREPLY(*(*it), *this);
+		RPL_ENDOFNAMES(*(*it), _name);
 		it++;
 	}
 }

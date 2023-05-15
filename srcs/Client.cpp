@@ -6,7 +6,7 @@
 /*   By: ijinhong <ijinhong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/09 16:46:18 by ijinhong          #+#    #+#             */
-/*   Updated: 2023/05/14 19:51:24 by ijinhong         ###   ########.fr       */
+/*   Updated: 2023/05/15 18:27:45 by ijinhong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,12 @@
 
 Client::Client(int socketfd):
 	_authenticated(false),
+	_welcomed(false),
+	_nickInUse(false),
 	_socketfd(socketfd),
 	_roll("normal")
 {
-	printf("Client created\n");
+	std::cout << "Client created" << std::endl;
 }
 
 Client::~Client()
@@ -28,6 +30,17 @@ Client::~Client()
 void	Client::setAuth(bool auth)
 {
 	_authenticated = auth;
+}
+
+void	Client::setWelcome(bool welcome)
+{
+	if (!_welcomed)
+		_welcomed = welcome;
+}
+
+void	Client::setNickInUse(bool flag)
+{
+	_nickInUse = flag;
 }
 
 void	Client::setUserName(std::string new_name)
@@ -47,12 +60,18 @@ void	Client::setHostName(std::string new_name)
 
 void	Client::setNickName(std::string new_name)
 {
+	_oldnick = _nick;
 	_nick = new_name;
 }
 
 void	Client::setRoll(std::string roll)
 {
 	_roll = roll;
+}
+
+void	Client::setBuffer(std::string str)
+{
+	_buffer = str;
 }
 
 void	Client::addChannel(Channel& channel)
@@ -63,14 +82,44 @@ void	Client::addChannel(Channel& channel)
 		_channels.push_back(&channel);
 }
 
+void	Client::addBuffer(std::string buffer)
+{
+	_buffer += buffer;
+}
+
 bool	Client::isAuthenticated()
 {
 	return (this->_authenticated);
 }
 
+bool	Client::isWelcomed()
+{
+	return (this->_welcomed);
+}
+
+bool	Client::isNickSet()
+{
+	return (!_nick.empty());
+}
+
+bool	Client::isNickUsed()
+{
+	return (_nickInUse);
+}
+
+bool	Client::isUserSet()
+{
+	return (!(_username.empty() || _realname.empty() || _hostname.empty()));
+}
+
 int	Client::getFD()
 {
 	return (this->_socketfd);
+}
+
+std::string&	Client::getBuffer()
+{
+	return (this->_buffer);
 }
 
 const std::string&	Client::getUserName()
@@ -91,6 +140,11 @@ const std::string&	Client::getHostName()
 const std::string&	Client::getNickName()
 {
 	return (this->_nick);
+}
+
+const std::string&	Client::getOldNick()
+{
+	return (this->_oldnick);
 }
 
 const std::string&	Client::getRoll()
