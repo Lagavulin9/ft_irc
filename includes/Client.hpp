@@ -6,7 +6,7 @@
 /*   By: ijinhong <ijinhong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 23:23:19 by ijinhong          #+#    #+#             */
-/*   Updated: 2023/05/16 19:48:27 by ijinhong         ###   ########.fr       */
+/*   Updated: 2023/05/17 00:56:56 by ijinhong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,6 @@
 #ifndef __USER_HPP__
 # define __USER_HPP__
 
-# include <unistd.h>
-# include <stdlib.h>
-# include <unistd.h>
-# include <stdio.h>
-# include <stdlib.h>
-# include <sys/socket.h>
-# include <sys/select.h>
-# include <sys/poll.h>
-# include <arpa/inet.h>
 # include <iostream>
 # include <string>
 # include <sstream>

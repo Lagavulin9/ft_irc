@@ -6,7 +6,7 @@
 /*   By: ijinhong <ijinhong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/14 21:25:46 by ijinhong          #+#    #+#             */
-/*   Updated: 2023/05/16 21:43:30 by ijinhong         ###   ########.fr       */
+/*   Updated: 2023/05/17 01:57:02 by ijinhong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,10 @@
 # define __SERVER_CPP__
 
 # include "defines.hpp"
-# include <unistd.h>
 # include <stdlib.h>
 # include <unistd.h>
-# include <stdio.h>
-# include <stdlib.h>
+# include <signal.h>
 # include <sys/socket.h>
-# include <sys/select.h>
 # include <sys/poll.h>
 # include <arpa/inet.h>
 # include <iostream>
@@ -38,7 +35,7 @@ private:
 	struct sockaddr_in				_serv_adr;
 	char							_buffer[BUFFER_SIZE];
 	int								_serv_sock, _port;
-	struct pollfd					_poll_fds[MAX_CLIENT];
+	struct pollfd					_poll_fds[MAX_CLIENT+1];
 	std::string						_pass;
 	std::map<int, Client*>			_clients;
 	std::map<std::string, Channel*>	_channels;
@@ -51,7 +48,7 @@ private:
 	void	accept(void);
 	void	initPoll(void);
 	void	clientRead(void);
-	void	clientWrite(int to, std::string msg);
+	void	clientWrite(int, std::string);
 	void	registerClient(int client_socket);
 	void	removeClient(Client *client);
 	void	setCommandInfo(std::string line, std::vector<std::string>& cmd_info);
@@ -67,12 +64,12 @@ private:
 	void	quit(Client& client);
 	void	handleRequest(Client *client, std::string req);
 	void	welcomeClient(Client& client);
+	void	shutdown(void);
 public:
 	Server(int port, std::string pass);
 	~Server();
 
-	void		launchServer(void);
-	//Channel&	createChannel(const std::string& name);
+	void		launchServer(bool&);
 };
 
 #endif

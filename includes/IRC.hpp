@@ -6,7 +6,7 @@
 /*   By: ijinhong <ijinhong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 22:07:39 by ijinhong          #+#    #+#             */
-/*   Updated: 2023/05/16 21:40:10 by ijinhong         ###   ########.fr       */
+/*   Updated: 2023/05/17 00:57:41 by ijinhong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,7 @@
 # include "Server.hpp"
 # include <unistd.h>
 # include <stdlib.h>
-# include <unistd.h>
-# include <stdio.h>
-# include <stdlib.h>
 # include <sys/socket.h>
-# include <sys/select.h>
 # include <sys/poll.h>
 # include <arpa/inet.h>
 # include <iostream>

@@ -6,6 +6,7 @@ INC = includes
 SRC_DIR = srcs/
 SRC = main.cpp \
 	Server.cpp \
+	ServerCommands.cpp \
 	Channel.cpp \
 	Client.cpp \
 	Utils.cpp \

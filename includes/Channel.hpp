@@ -6,7 +6,7 @@
 /*   By: ijinhong <ijinhong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 23:32:33 by ijinhong          #+#    #+#             */
-/*   Updated: 2023/05/16 21:09:41 by ijinhong         ###   ########.fr       */
+/*   Updated: 2023/05/17 00:56:34 by ijinhong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,20 +14,9 @@
 #ifndef __CHANNEL_HPP__
 # define __CHANNEL_HPP__
 
-# include <unistd.h>
-# include <stdlib.h>
-# include <unistd.h>
-# include <stdio.h>
-# include <stdlib.h>
-# include <sys/socket.h>
-# include <sys/select.h>
-# include <sys/poll.h>
-# include <arpa/inet.h>
 # include <iostream>
 # include <string>
-# include <sstream>
 # include <vector>
-# include <map>
 
 class Client;
 class Server;
