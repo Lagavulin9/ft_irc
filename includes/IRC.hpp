@@ -6,7 +6,7 @@
 /*   By: ijinhong <ijinhong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 22:07:39 by ijinhong          #+#    #+#             */
-/*   Updated: 2023/05/15 19:46:42 by ijinhong         ###   ########.fr       */
+/*   Updated: 2023/05/16 21:40:10 by ijinhong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 # define __IRC_HPP__
 
 # include "defines.hpp"
-# include "Command.hpp"
 # include "Client.hpp"
 # include "Channel.hpp"
 # include "Server.hpp"
@@ -42,16 +41,19 @@ void	RPL_CREATED(Client& client);
 void	RPL_MYINFO(Client& client);
 void	RPL_CHANNELMODEIS(Client& client, Channel& channel);
 void	RPL_JOIN(Client& client, std::string from, std::string channel_name);
+void	RPL_KICK(Client& client, Client& from, Client& to_kick, Channel& channel);
 void	RPL_NAMREPLY(Client& client, Channel& channel);
 void	RPL_ENDOFNAMES(Client& client, std::string channel_name);
 void	RPL_NICK(Client& client);
 void	RPL_PONG(Client& client);
 void	RPL_USERMODE(Client& client, std::string mod);
+void	RPL_QUIT(Client& client, Client& from);
 void	ERR_NOSUCHNICK(Client& client);
 void	ERR_NOSUCHCHANNEL(Client& client);
 void	ERR_NICKNAMEINUSE(Client& client);
-void	ERR_USERNOTINCHANNEL(Client& client);
-void	ERR_CHANOPRIVSNEEDED(Client& client);
+void	ERR_USERNOTINCHANNEL(Client& client, Channel& channel);
+void	ERR_CHANOPRIVSNEEDED(Client& client, Channel& channel);
+void	ERR_PASSWDMISMATCH(Client& client);
 void	ERR_UNKNOWNCOMMAND(Client& client, std::string cmd);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: ijinhong <ijinhong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/09 16:34:15 by ijinhong          #+#    #+#             */
-/*   Updated: 2023/05/15 19:45:48 by ijinhong         ###   ########.fr       */
+/*   Updated: 2023/05/16 20:59:32 by ijinhong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,12 +55,17 @@ void	RPL_ENDOFNAMES(Client& client, std::string channel_name)
 
 void	RPL_NICK(Client& client)
 {
-	sendToClient(client, ":"+client.getNickName()+"!"+client.getUserName()+"@localhost NICK "+client.getNickName()+"\n");
+	sendToClient(client, ":"+client.getOldNick()+"!"+client.getUserName()+"@localhost NICK "+client.getNickName()+"\n");
 }
 
 void	RPL_JOIN(Client& client, std::string from, std::string channel_name)
 {
 	sendToClient(client, ":"+from+"!"+client.getUserName()+"@localhost"+" JOIN :"+channel_name+"\n");
+}
+
+void	RPL_KICK(Client& client, Client& from, Client& to_kick, Channel& channel)
+{
+	sendToClient(client, ":"+from.getNickName()+"!"+client.getUserName()+"@localhost KICK "+channel.getName()+" "+to_kick.getNickName()+" :Kicked by the channel's operator\n");
 }
 
 void	RPL_PONG(Client& client)
@@ -71,6 +76,11 @@ void	RPL_PONG(Client& client)
 void	RPL_USERMODE(Client& client, std::string mod)
 {
 	sendToClient(client, ":"+client.getNickName()+" MODE "+client.getNickName()+" :"+mod+"\n");
+}
+
+void	RPL_QUIT(Client& client, Client& from)
+{
+	sendToClient(client, ":"+from.getNickName()+"!"+from.getUserName()+"@localhost QUIT :QUIT :leaving\n");
 }
 
 void	ERR_NOSUCHNICK(Client& client)
@@ -93,12 +103,17 @@ void	ERR_NICKNAMEINUSE(Client& client)
 	sendToClient(client ,":localhost 433 "+client.getNickName()+" "+client.getUserName()+" :Nick already in use\n");
 }
 
-void	ERR_USERNOTINCHANNEL(Client& client)
+void	ERR_USERNOTINCHANNEL(Client& client, Channel& channel)
 {
-	sendToClient(client, ":localhost 441 :User not in channel\n");
+	sendToClient(client, ":localhost 441 "+client.getNickName()+" "+channel.getName()+" :User not in channel\n");
 }
 
-void	ERR_CHANOPRIVSNEEDED(Client& client)
+void	ERR_PASSWDMISMATCH(Client& client)
 {
-	sendToClient(client, ":localhost 482 :You are not channel operator\n");
+	sendToClient(client, ":localhost 464  :Password Incorrect.\n");
+}
+
+void	ERR_CHANOPRIVSNEEDED(Client& client, Channel& channel)
+{
+	sendToClient(client, ":localhost 482 "+client.getNickName()+" "+channel.getName()+" :You are not channel operator\n");
 }

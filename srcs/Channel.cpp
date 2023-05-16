@@ -6,7 +6,7 @@
 /*   By: ijinhong <ijinhong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/14 16:56:16 by ijinhong          #+#    #+#             */
-/*   Updated: 2023/05/15 20:11:30 by ijinhong         ###   ########.fr       */
+/*   Updated: 2023/05/16 20:30:50 by ijinhong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,7 @@ void	Channel::broadcastAll(std::string msg)
 	}
 }
 
-void	Channel::announce(Client& from)
+void	Channel::announceJoin(Client& from)
 {
 	std::vector<Client*>::iterator	it = _clients.begin();
 	while (it != _clients.end())
@@ -111,6 +111,27 @@ void	Channel::announce(Client& from)
 		RPL_JOIN(*(*it), from.getNickName(), _name);
 		RPL_NAMREPLY(*(*it), *this);
 		RPL_ENDOFNAMES(*(*it), _name);
+		it++;
+	}
+}
+
+void	Channel::announceKick(Client& from, Client& to_kick)
+{
+	std::vector<Client*>::iterator	it = _clients.begin();
+	while (it != _clients.end())
+	{
+		RPL_KICK(*(*it), from, to_kick, *this);
+		it++;
+	}
+}
+
+void	Channel::announceQuit(Client& from)
+{
+	std::vector<Client*>::iterator	it = _clients.begin();
+	while (it != _clients.end())
+	{
+		if (*it != &from)
+			RPL_QUIT(*(*it), from);
 		it++;
 	}
 }

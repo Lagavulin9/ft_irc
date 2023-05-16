@@ -6,7 +6,7 @@
 /*   By: ijinhong <ijinhong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/14 21:25:46 by ijinhong          #+#    #+#             */
-/*   Updated: 2023/05/15 18:47:17 by ijinhong         ###   ########.fr       */
+/*   Updated: 2023/05/16 21:43:30 by ijinhong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,6 @@ private:
 	void	bind(void);
 	void	accept(void);
 	void	initPoll(void);
-	void	broadcast(int from, const std::string& msg);
 	void	clientRead(void);
 	void	clientWrite(int to, std::string msg);
 	void	registerClient(int client_socket);
@@ -65,7 +64,9 @@ private:
 	void	nick(Client& client, std::vector<std::string> cmd_info);
 	void	pong(Client& client);
 	void	mode(Client& client, std::vector<std::string> cmd_info);
+	void	quit(Client& client);
 	void	handleRequest(Client *client, std::string req);
+	void	welcomeClient(Client& client);
 public:
 	Server(int port, std::string pass);
 	~Server();

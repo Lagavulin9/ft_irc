@@ -6,7 +6,7 @@
 /*   By: ijinhong <ijinhong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 23:32:33 by ijinhong          #+#    #+#             */
-/*   Updated: 2023/05/15 19:45:04 by ijinhong         ###   ########.fr       */
+/*   Updated: 2023/05/16 21:09:41 by ijinhong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,9 @@ public:
 	void						removeClient(Client& client);
 	void						broadcast(Client&, std::string);
 	void						broadcastAll(std::string);
-	void						announce(Client& from);
+	void						announceJoin(Client& from);
+	void						announceKick(Client& from, Client& to_kick);
+	void						announceQuit(Client& from);
 };
 
 #endif

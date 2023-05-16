@@ -6,7 +6,7 @@
 /*   By: ijinhong <ijinhong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/09 16:46:18 by ijinhong          #+#    #+#             */
-/*   Updated: 2023/05/15 18:27:45 by ijinhong         ###   ########.fr       */
+/*   Updated: 2023/05/16 20:06:30 by ijinhong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,7 +152,7 @@ const std::string&	Client::getRoll()
 	return (this->_roll);
 }
 
-const std::vector<Channel*>	Client::getChannels()
+std::vector<Channel*>	Client::getChannels()
 {
 	return (this->_channels);
 }

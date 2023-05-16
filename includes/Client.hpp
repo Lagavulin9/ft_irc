@@ -6,7 +6,7 @@
 /*   By: ijinhong <ijinhong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 23:23:19 by ijinhong          #+#    #+#             */
-/*   Updated: 2023/05/15 18:25:49 by ijinhong         ###   ########.fr       */
+/*   Updated: 2023/05/16 19:48:27 by ijinhong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ public:
 	const std::string&	getNickName(void);
 	const std::string&	getOldNick(void);
 	const std::string&	getRoll(void);
-	const std::vector<Channel*> getChannels(void);
+	std::vector<Channel*> getChannels(void);
 	void				removeChannel(Channel&);
 };
 
