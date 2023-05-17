@@ -6,7 +6,7 @@
 /*   By: ijinhong <ijinhong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/06 00:18:03 by ijinhong          #+#    #+#             */
-/*   Updated: 2023/05/17 01:29:01 by ijinhong         ###   ########.fr       */
+/*   Updated: 2023/05/17 11:38:54 by ijinhong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,11 @@
 # define MAX_CLIENT 2
 # define SERVER_POLLFD_IDX 0
 # define SERVERNAME jinholee_IRC
-# define NUMBER_OF_COMMANDS 10
+# define NUMBER_OF_COMMANDS 9
 
 enum e_commands
 {
-	JOIN,KICK,MODE,NICK,PART,PASS,PING,PRIVMSG,QUIT,USER
+	JOIN,KICK,MODE,NICK,PASS,PING,PRIVMSG,QUIT,USER
 };
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: ijinhong <ijinhong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/14 21:45:51 by ijinhong          #+#    #+#             */
-/*   Updated: 2023/05/17 10:56:20 by ijinhong         ###   ########.fr       */
+/*   Updated: 2023/05/17 11:39:43 by ijinhong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -203,7 +203,7 @@ void	Server::handleRequest(Client *client, std::string req)
 {
 	size_t		pos, i;
 	std::string	line, cmd;
-	std::string	_validCmds[] = { "JOIN","KICK","MODE","NICK","PART","PASS","PING","PRIVMSG","QUIT","USER" };
+	std::string	_validCmds[] = { "JOIN","KICK","MODE","NICK","PASS","PING","PRIVMSG","QUIT","USER" };
 
 	client->addBuffer(req);
 	while (1)
@@ -232,7 +232,6 @@ void	Server::handleRequest(Client *client, std::string req)
 			case JOIN: this->join(*client, cmd_info); break;
 			case KICK: this->kick(*client, cmd_info); break;
 			case NICK: this->nick(*client, cmd_info); break;
-			case PART: break;
 			case PING: this->pong(*client); break;
 			case PRIVMSG: this->privmsg(*client, cmd_info); break;
 			case MODE: this->mode(*client, cmd_info); break;

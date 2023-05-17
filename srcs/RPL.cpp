@@ -6,7 +6,7 @@
 /*   By: ijinhong <ijinhong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/09 16:34:15 by ijinhong          #+#    #+#             */
-/*   Updated: 2023/05/17 09:23:04 by ijinhong         ###   ########.fr       */
+/*   Updated: 2023/05/17 11:40:34 by ijinhong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void	RPL_CREATED(Client& client)
 
 void	RPL_MYINFO(Client& client)
 {
-	sendToClient(client,  ":localhost 004 "+client.getNickName()+" :jinholee_IRC v1.0 +i +o\n");
+	sendToClient(client,  ":localhost 004 "+client.getNickName()+" :jinholee_IRC v1.0 +i\n");
 }
 
 void	RPL_CHANNELMODEIS(Client& client, Channel& channel)
