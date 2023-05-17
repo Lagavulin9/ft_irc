@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RPL.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ijinhong <ijinhong@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jinholee <jinholee@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/09 16:34:15 by ijinhong          #+#    #+#             */
-/*   Updated: 2023/05/17 13:51:40 by ijinhong         ###   ########.fr       */
+/*   Updated: 2023/05/17 14:53:05 by jinholee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,9 +97,11 @@ void	ERR_UNKNOWNCOMMAND(Client& client, std::string cmd)
 	sendToClient(client, ":localhost 421 "+client.getNickName()+" "+cmd+" : Unknown Command\n");
 }
 
-void	ERR_NICKNAMEINUSE(Client& client)
+void	ERR_NICKNAMEINUSE(Client& client, std::string nick)
 {
-	sendToClient(client ,":localhost 433 "+client.getNickName()+" "+client.getUserName()+" :Nick already in use\n");
+	if (nick.empty())
+		nick = client.getNickName();
+	sendToClient(client ,":localhost 433 "+client.getNickName()+" "+nick+" :Nick already in use\n");
 }
 
 void	ERR_USERNOTINCHANNEL(Client& client, Channel& channel)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ijinhong <ijinhong@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jinholee <jinholee@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/14 21:45:51 by ijinhong          #+#    #+#             */
-/*   Updated: 2023/05/17 13:50:43 by ijinhong         ###   ########.fr       */
+/*   Updated: 2023/05/17 14:51:05 by jinholee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -263,7 +263,7 @@ void	Server::welcomeClient(Client& client)
 		if (client.isUserSet())
 		{
 			if (client.isNickUsed())
-				ERR_NICKNAMEINUSE(client);
+				ERR_NICKNAMEINUSE(client, "");
 			else if (client.isNickSet())
 			{
 				RPL_WELCOME(client);

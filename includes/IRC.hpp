@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IRC.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ijinhong <ijinhong@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jinholee <jinholee@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 22:07:39 by ijinhong          #+#    #+#             */
-/*   Updated: 2023/05/17 09:16:52 by ijinhong         ###   ########.fr       */
+/*   Updated: 2023/05/17 14:50:36 by jinholee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void	RPL_USERMODE(Client& client, std::string mod);
 void	RPL_QUIT(Client& client, Client& from);
 void	ERR_NOSUCHNICK(Client& client);
 void	ERR_NOSUCHCHANNEL(Client& client);
-void	ERR_NICKNAMEINUSE(Client& client);
+void	ERR_NICKNAMEINUSE(Client& client, std::string nick);
 void	ERR_USERNOTINCHANNEL(Client& client, Channel& channel);
 void	ERR_CHANOPRIVSNEEDED(Client& client, Channel& channel);
 void	ERR_PASSWDMISMATCH(Client& client);

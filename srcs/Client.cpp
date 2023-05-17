@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ijinhong <ijinhong@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jinholee <jinholee@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/09 16:46:18 by ijinhong          #+#    #+#             */
-/*   Updated: 2023/05/17 13:30:51 by ijinhong         ###   ########.fr       */
+/*   Updated: 2023/05/17 15:10:06 by jinholee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/IRC.hpp"
-#include "../includes/Client.hpp"
 
 Client::Client(int socketfd):
 	_authenticated(false),
@@ -174,11 +173,7 @@ std::vector<Channel*>	Client::getChannels()
 
 void	Client::removeChannel(Channel& channel)
 {
-	std::vector<Channel*>::iterator	it = _channels.begin();
-	while (it != _channels.end())
-	{
-		Channel	*to_remove = *it;
-		if (to_remove == &channel)
-			_channels.erase(it);
-	}
+	std::vector<Channel*>::iterator	it = std::find(_channels.begin(), _channels.end(), &channel);
+	if (it != _channels.end())
+		_channels.erase(it);
 }

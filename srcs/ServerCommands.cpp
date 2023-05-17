@@ -6,7 +6,7 @@
 /*   By: jinholee <jinholee@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 00:58:21 by ijinhong          #+#    #+#             */
-/*   Updated: 2023/05/17 14:14:18 by jinholee         ###   ########.fr       */
+/*   Updated: 2023/05/17 15:02:03 by jinholee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,7 @@ void	Server::kick(Client& client, std::vector<std::string> cmd_info)
 	std::vector<Client*>::iterator	iter = client_list.begin();
 	while (iter != client_list.end())
 	{
+		printf("hihhih\n");
 		Client *to_kick = *iter;
 		if (to_kick->getNickName() == nick)
 		{
@@ -153,7 +154,7 @@ void	Server::user(Client& client, std::vector<std::string> cmd_info)
 
 void	Server::nick(Client& client, std::vector<std::string> cmd_info)
 {
-	if (cmd_info.size() != 2)
+	if (cmd_info.size() < 2)
 		return ;
 	std::string nick = cmd_info[1];
 	std::map<int,Client*>::iterator	it = _clients.begin();
@@ -162,7 +163,7 @@ void	Server::nick(Client& client, std::vector<std::string> cmd_info)
 		if (it->second->getNickName() == nick)
 		{
 			if (client.isUserSet())
-				ERR_NICKNAMEINUSE(client);
+				ERR_NICKNAMEINUSE(client, nick);
 			else
 			{
 				client.setNickName(nick);
@@ -180,7 +181,7 @@ void	Server::nick(Client& client, std::vector<std::string> cmd_info)
 
 void	Server::pass(Client& client, std::vector<std::string> cmd_info)
 {
-	if (cmd_info.size() != 2)
+	if (cmd_info.size() < 2)
 		return ;
 	if (cmd_info[1] != _pass)
 	{
