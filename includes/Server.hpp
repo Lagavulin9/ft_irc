@@ -6,7 +6,7 @@
 /*   By: ijinhong <ijinhong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/14 21:25:46 by ijinhong          #+#    #+#             */
-/*   Updated: 2023/05/17 01:57:02 by ijinhong         ###   ########.fr       */
+/*   Updated: 2023/05/17 09:40:57 by ijinhong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 # include "defines.hpp"
 # include <stdlib.h>
 # include <unistd.h>
-# include <signal.h>
+# include <fcntl.h>
 # include <sys/socket.h>
 # include <sys/poll.h>
 # include <arpa/inet.h>

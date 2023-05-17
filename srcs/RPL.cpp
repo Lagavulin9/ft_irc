@@ -6,7 +6,7 @@
 /*   By: ijinhong <ijinhong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/09 16:34:15 by ijinhong          #+#    #+#             */
-/*   Updated: 2023/05/16 20:59:32 by ijinhong         ###   ########.fr       */
+/*   Updated: 2023/05/17 09:23:04 by ijinhong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	sendToClient(Client& client, std::string reply)
 {
-	send(client.getFD(), reply.c_str(), reply.length(), 0);
+	send(client.getFD(), reply.c_str(), reply.length(), MSG_DONTWAIT);
 	std::cout << "[Server] to [Client #" << client.getFD() << "] >> " << reply;
 }
 

@@ -6,7 +6,7 @@
 /*   By: ijinhong <ijinhong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/14 21:45:51 by ijinhong          #+#    #+#             */
-/*   Updated: 2023/05/17 02:27:25 by ijinhong         ###   ########.fr       */
+/*   Updated: 2023/05/17 10:56:20 by ijinhong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,9 +83,11 @@ void	Server::accept(void)
 	if (client_socket == -1)
 	{
 		perror("Accept");
-		exit(1);
+		close(client_socket);
+		return ;
 	}
-	
+	int flag = fcntl(client_socket, F_GETFL, 0);
+	fcntl(client_socket, F_SETFL, flag | O_NONBLOCK);
 	for (i = SERVER_POLLFD_IDX + 1; i <= MAX_CLIENT; i++)
 	{
 		if (_poll_fds[i].fd < 0)
@@ -162,7 +164,7 @@ void	Server::removeClient(Client	*client)
 
 void	Server::clientWrite(int client_socket, std::string msg)
 {
-	send(client_socket, msg.c_str(), msg.length(), 0);
+	send(client_socket, msg.c_str(), msg.length(), MSG_DONTWAIT);
 }
 
 void	Server::clientRead(void)
@@ -192,9 +194,7 @@ void	Server::clientRead(void)
 				_poll_fds[i].fd = -1;
 			}
 			else
-			{
 				this->handleRequest(client, buffer);
-			}
 		}
 	}
 }
@@ -270,7 +270,7 @@ void	Server::launchServer(bool& ServerShutdown)
 
 	while (!ServerShutdown)
 	{
-		n = poll(_poll_fds, MAX_CLIENT+1, 5000);
+		n = poll(_poll_fds, MAX_CLIENT+1, 0);
 		if (n == 0)
 			continue;
 		if (_poll_fds[SERVER_POLLFD_IDX].revents & POLLIN)
@@ -282,7 +282,7 @@ void	Server::launchServer(bool& ServerShutdown)
 
 void	Server::shutdown(void)
 {
-	std::cout << "Server Shutting down..." << std::endl;
+	std::cout << " Server Shutting down..." << std::endl;
 	for (int i=SERVER_POLLFD_IDX+1; i<=MAX_CLIENT; i++)
 		close(_poll_fds[i].fd);
 	//system("leaks ircserv");
