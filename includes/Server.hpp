@@ -6,7 +6,7 @@
 /*   By: ijinhong <ijinhong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/14 21:25:46 by ijinhong          #+#    #+#             */
-/*   Updated: 2023/05/17 09:40:57 by ijinhong         ###   ########.fr       */
+/*   Updated: 2023/05/17 13:24:57 by ijinhong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ private:
 	void	accept(void);
 	void	initPoll(void);
 	void	clientRead(void);
-	void	clientWrite(int, std::string);
+	void	clientWrite(void);
 	void	registerClient(int client_socket);
 	void	removeClient(Client *client);
 	void	setCommandInfo(std::string line, std::vector<std::string>& cmd_info);

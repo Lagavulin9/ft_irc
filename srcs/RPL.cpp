@@ -6,7 +6,7 @@
 /*   By: ijinhong <ijinhong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/09 16:34:15 by ijinhong          #+#    #+#             */
-/*   Updated: 2023/05/17 11:40:34 by ijinhong         ###   ########.fr       */
+/*   Updated: 2023/05/17 13:51:40 by ijinhong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,7 @@
 
 void	sendToClient(Client& client, std::string reply)
 {
-	send(client.getFD(), reply.c_str(), reply.length(), MSG_DONTWAIT);
-	std::cout << "[Server] to [Client #" << client.getFD() << "] >> " << reply;
+	client.addWriteBuffer(reply);
 }
 
 void	RPL_WELCOME(Client& client)

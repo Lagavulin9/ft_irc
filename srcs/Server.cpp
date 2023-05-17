@@ -6,7 +6,7 @@
 /*   By: ijinhong <ijinhong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/14 21:45:51 by ijinhong          #+#    #+#             */
-/*   Updated: 2023/05/17 11:39:43 by ijinhong         ###   ########.fr       */
+/*   Updated: 2023/05/17 13:50:43 by ijinhong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,13 +93,13 @@ void	Server::accept(void)
 		if (_poll_fds[i].fd < 0)
 		{
 			_poll_fds[i].fd = client_socket;
-			_poll_fds[i].events = POLLIN;
+			_poll_fds[i].events = POLLIN | POLLOUT;
 			break;
 		}
 	}
 	if (i > MAX_CLIENT)
 	{
-		this->clientWrite(client_socket, "The server is full");
+		send(client_socket, "The server is full", 18, MSG_DONTWAIT);
 		close(client_socket);
 	}
 	else
@@ -162,9 +162,22 @@ void	Server::removeClient(Client	*client)
 	std::cout << "Client #" << client_socket << " disconnected"<< std::endl;
 }
 
-void	Server::clientWrite(int client_socket, std::string msg)
+void	Server::clientWrite()
 {
-	send(client_socket, msg.c_str(), msg.length(), MSG_DONTWAIT);
+	size_t	sent;
+	std::map<int,Client*>::iterator it = _clients.begin();
+	while (it != _clients.end())
+	{
+		Client *client = it->second;
+		std::string to_send = client->getWriteBuffer();
+		if (!to_send.empty())
+		{
+			sent = send(client->getFD(), to_send.c_str(), to_send.length(), MSG_DONTWAIT);
+			std::cout << "[Server] to [Client #" << client->getFD() << "] >> " << to_send.substr(0,sent);
+			client->setWriteBuffer(to_send.substr(sent));
+		}
+		it++;
+	}
 }
 
 void	Server::clientRead(void)
@@ -275,6 +288,7 @@ void	Server::launchServer(bool& ServerShutdown)
 		if (_poll_fds[SERVER_POLLFD_IDX].revents & POLLIN)
 			this->accept();
 		this->clientRead();
+		this->clientWrite();
 	}
 	this->shutdown();
 }

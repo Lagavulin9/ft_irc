@@ -6,7 +6,7 @@
 /*   By: ijinhong <ijinhong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/09 16:46:18 by ijinhong          #+#    #+#             */
-/*   Updated: 2023/05/16 20:06:30 by ijinhong         ###   ########.fr       */
+/*   Updated: 2023/05/17 13:30:51 by ijinhong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,12 @@ void	Client::setRoll(std::string roll)
 
 void	Client::setBuffer(std::string str)
 {
-	_buffer = str;
+	_readBuffer = str;
+}
+
+void	Client::setWriteBuffer(std::string buffer)
+{
+	_writeBuffer = buffer;
 }
 
 void	Client::addChannel(Channel& channel)
@@ -84,7 +89,12 @@ void	Client::addChannel(Channel& channel)
 
 void	Client::addBuffer(std::string buffer)
 {
-	_buffer += buffer;
+	_readBuffer += buffer;
+}
+
+void	Client::addWriteBuffer(std::string buffer)
+{
+	_writeBuffer += buffer;
 }
 
 bool	Client::isAuthenticated()
@@ -117,9 +127,14 @@ int	Client::getFD()
 	return (this->_socketfd);
 }
 
-std::string&	Client::getBuffer()
+std::string	Client::getBuffer()
 {
-	return (this->_buffer);
+	return (this->_readBuffer);
+}
+
+std::string	Client::getWriteBuffer()
+{
+	return (this->_writeBuffer);
 }
 
 const std::string&	Client::getUserName()
