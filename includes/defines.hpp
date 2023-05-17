@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   defines.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ijinhong <ijinhong@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jinholee <jinholee@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/06 00:18:03 by ijinhong          #+#    #+#             */
-/*   Updated: 2023/05/17 11:38:54 by ijinhong         ###   ########.fr       */
+/*   Updated: 2023/05/17 14:19:04 by jinholee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,9 @@
 
 # define VERSION 1.0
 # define BUFFER_SIZE 4096
-# define MAX_CLIENT 2
+# define MAX_CLIENT 5
 # define SERVER_POLLFD_IDX 0
-# define SERVERNAME jinholee_IRC
+# define SERVERNAME minji_IRC
 # define NUMBER_OF_COMMANDS 9
 
 enum e_commands

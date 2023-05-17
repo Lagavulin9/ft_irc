@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerCommands.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ijinhong <ijinhong@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jinholee <jinholee@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 00:58:21 by ijinhong          #+#    #+#             */
-/*   Updated: 2023/05/17 02:27:31 by ijinhong         ###   ########.fr       */
+/*   Updated: 2023/05/17 14:14:18 by jinholee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,7 +130,7 @@ void	Server::mode(Client& client, std::vector<std::string> cmd_info)
 	{
 		if (cmd_info.size() != 3)
 			return ;
-		if (cmd_info[2] != "+i" && cmd_info[2] != "+o")
+		if (cmd_info[2] != "+i")
 			return ;
 		RPL_USERMODE(client, cmd_info[2]);
 	}
@@ -143,11 +143,11 @@ void	Server::pong(Client& client)
 
 void	Server::user(Client& client, std::vector<std::string> cmd_info)
 {
-	if (cmd_info.size() != 5)
+	if (cmd_info.size() < 5)
 		return;
 	client.setUserName(cmd_info[1]);
 	client.setHostName(cmd_info[3]);
-	client.setRealName(cmd_info[4]);
+	client.setRealName(cmd_info[4].substr(1));
 	this->welcomeClient(client);
 }
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ijinhong <ijinhong@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jinholee <jinholee@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 23:23:19 by ijinhong          #+#    #+#             */
-/*   Updated: 2023/05/17 13:29:51 by ijinhong         ###   ########.fr       */
+/*   Updated: 2023/05/17 13:58:45 by jinholee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <iostream>
 # include <string>
 # include <sstream>
+# include <vector>
 
 class Channel;
 class Server;
